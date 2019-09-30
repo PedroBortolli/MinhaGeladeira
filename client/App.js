@@ -1,19 +1,16 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import styled from 'styled-components'
+import { AppRegistry } from 'react-native'
+import { NativeRouter, Route } from 'react-router-native'
+import Home from './pages/Home'
+import About from './pages/About'
 
-const Test = styled.View`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: red;
-    height: 100%;
-`
+const App = () => (
+    <NativeRouter>
+        <Route exact path="/" component={Home} />
+        <Route path="/about" component={About} />
+    </NativeRouter>
+)
 
-export default function App() {
-    return (
-        <Test>
-            <Text>Hello, World!</Text>
-        </Test>
-    )
-}
+export default App
+
+//AppRegistry.registerComponent("Minha Geladeira", () => App)
