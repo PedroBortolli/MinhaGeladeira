@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "minhageladeira",
+  "private_key_id": "92917bb8cc7a770b574e4431050a32762b3611e4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCuJcslzU9L7gKs\nnypXi8LuNxDyJbEa8dOWQyZSN4WIjloIZiaeAHkdusK6+ERW1Xq94BbrUl5t21e8\nidg3HdS2St6ZREklZQFjtOhTh/EPTqA3XFxeV0cHW2Lwnh3BSOfQVLkH0nMzuw/X\n2K5JY+z0+KpBexzOis0Ix+XpanGJkaZoKm7y2xLPK3WTBDg+H5IN1RDjOANMkxgw\ndDMAS8R0UXQ6Cz/11lZfFxKkRB5HSSkzRJH/QBdbi6zhw7l2bwGqiH4ymUDTMnZg\nvZFIwQ5S2TeK9L4qBlCLMLjTesyhWY4tdwW3t4HlvaCbCXQ+czistKCMbUmudsLQ\nXyKVgpgLAgMBAAECggEABI6JwJCdBWy/yJf6voMf/O8pplogaxk3rCG9rmNY9gE1\n2L78q7JNL98amnizcRSDzbCtsf4S6VT7ZinXfxUjmghe6+KeG+89zzWFM1N9A9xh\nHNrfjZYee/bMM/ec6f3Vzm9yPJUElGVgGMCkbthTqmVQeFBzO1/AsSGOfWbMMuS2\n1dzxhpCY5bolXnNn3wOv6Q/UiNE2oMBwsM8ebfYU87ahEycnQ371b9EBa9NSCr6K\neyro4+qZi3czbMquZutkB/lA9dE0+SRulMqy2DRU2w5PD9urH9A/7qklSb6sYag4\nv4Qu5/lvKBkxz+yW10aTG4YBsAzVGE+/Ap78LTaqIQKBgQDhnelIxY6++oD4kcN3\nO8KAQgyuM2SX8pCs8KqGfmOwuBaYVRmD7MHK7PUlZi2vHfodpox9IuSY3km0b7L4\n2jmZ8Qh2doZ9u5B3KWju2oNuyfaV9kMBrxUD0LF2jClmVDTFQUYYt++7lIWEJJBD\nH9DU64fALhr18Kj8mYyjH4cKJQKBgQDFmX47v0d1xrvE/5oQERoYVob5aMMJz4cx\npwj/mpGRzceqPJqIitalDK5+u+MOzMBRVHdTkIMdBMf6v/nBT0B7GTDmAd7SRGDz\nWL/qwygjge4AdSZ//bkfKvBLqDrnJdA62AFj+dfxFQbcZwQU/T1J72ozUalWeJTO\negAlF+TKbwKBgQCSbjHliEsgSmeAbOKHNWMEaVnfif2E3OrnQ3/5sHg1TxVjIwBf\nbj9M3EQzVMDbwkH+EoVmBkqFqOf/Uuu+tavi7NxIPp8FZcHahSbUtz/MnQoMxHsy\n0ZZ7FmzHeyq3fnmNeNLs4hyXC0sou65h0nlwZ7mAkqvu6ZZT87iieqjjfQKBgHPQ\nv1gtiKjTToLsfVQlcfIJ5RqR+J7rcAX+LRwDcIbQ4dI5qymUlrIueKf3X+HwyFfi\n9f2YmgCMKNojYzOWS+janvpw5jS/t0NqJTJoKEKHiQPjpikmgTZvaGAvvjZ0x1N1\n/3qlmZfIBzlvd8kFlMKc/NYPav0vt6g9gZA8LPEpAoGAczytiND0ISkHEX3BR+wY\nG8gDEm4fcVUjF+vkmEFMv5BecXdFXHku+0QCT2UJ7999hjuISzGo2dhVsxa2CtPX\nNQ4q8lOyRyUGigOwXZV2oTPPPrPvPoTMJS25OPZR5232HTkaTit2ADPy2++RBtLH\ntIaEedE1Nah4NaF15GiLK0M=\n-----END PRIVATE KEY-----\n",
+  "client_email": "minha-geladeira@minhageladeira.iam.gserviceaccount.com",
+  "client_id": "116402384174525784452",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/minha-geladeira%40minhageladeira.iam.gserviceaccount.com"
+}
