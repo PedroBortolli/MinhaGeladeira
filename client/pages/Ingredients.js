@@ -45,7 +45,7 @@ const Ingredients = () => {
             <Container>
                 {ingredients.map((ing, id) => {
                     return (
-                        <Item key={id}>
+                        <Item key={id} style={{borderBottomWidth: 1, borderBottomColor: '#cccccc'}}>
                             <Text style={{fontSize: 18}}>{ing}</Text>
                             <TouchableHighlight onPress={() => updateIngredients('delete', ing)}>
                                 <Cancel source={Cross} />
@@ -64,6 +64,7 @@ const Container = styled.View`
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 `
 const Input = styled.TextInput`
     width: 80%;
@@ -77,12 +78,12 @@ const Input = styled.TextInput`
 const Item = styled.View`
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    width: 100%;
+    padding: 8px 16px 8px 16px;
 `
 const Cancel = styled.Image`
-    margin-left: 16px;
     width: 16px;
     height: 16px;
 `
