@@ -11,6 +11,6 @@ require (
 	golang.org/x/sys v0.0.0-20191007154456-ef33b2fb2c41 // indirect
 	google.golang.org/api v0.10.0 // indirect
 	google.golang.org/appengine v1.6.4 // indirect
-	google.golang.org/genproto v0.0.0-20191007162740-aa923e3a3354 // indirect
+	google.golang.org/genproto v0.0.0-20191007162740-aa923e3a3354
 	google.golang.org/grpc v1.24.0 // indirect
 )
