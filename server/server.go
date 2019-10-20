@@ -2,11 +2,15 @@ package main
 
 // Inicializar ambiente
 // export GOOGLE_APPLICATION_CREDENTIALS="../secrets/auth.json"
+// em outra janela, executar:
+// curl localhost:8088/scan 
 
 import (
 	"context"
-	"log"
 	"io"
+	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -16,26 +20,34 @@ import (
 
 func main() {
 
-	// Sets the name of the image file to process.
-	filename := "../teste2.jpg"
+	http.HandleFunc("/scan", scan)
+	http.ListenAndServe(":8088", nil)
 
-	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatalf("Failed to read file: %v", err)
-	}
-	defer file.Close()
+}
 
-	text, err := getTextFromImage(file)
-	if err != nil {
-		log.Fatalf("Failed to get text from image: %v", err)
-	}
+func scan(w http.ResponseWriter, req *http.Request) {
 
-	//	log.Printf("Extracted text %q from image (%d chars).", text, len(text))
-	out, err := os.Create("output.txt")
-	out.WriteString(text[0].Description)
+		// Sets the name of the image file to process.
+		filename := "../teste2.jpg"
 
-	parseText(text[0].Description)
+		file, err := os.Open(filename)
+		if err != nil {
+			log.Fatalf("Failed to read file: %v", err)
+		}
+		defer file.Close()
+	
+		text, err := getTextFromImage(file)
+		if err != nil {
+			log.Fatalf("Failed to get text from image: %v", err)
+		}
+	
+		//	log.Printf("Extracted text %q from image (%d chars).", text, len(text))
+		out, err := os.Create("output.txt")
+		out.WriteString(text[0].Description)
+	
+		parsedText := parseText(text[0].Description)
 
+	fmt.Fprintf(w, parsedText)
 }
 
 func getTextFromImage(file io.Reader) ([]*proto.EntityAnnotation, error) {
@@ -60,10 +72,10 @@ func getTextFromImage(file io.Reader) ([]*proto.EntityAnnotation, error) {
 	return text, nil
 }
 
-func parseText(text string) error {
+func parseText(text string) string {
 
 	lines := strings.Split(text, "\n")
-	//	fmt.Printf("%q\n", strings.Split(text, "\n"))
-	log.Printf("%q\n", lines)
-	return nil
+	// //	fmt.Printf("%q\n", strings.Split(text, "\n"))
+	// log.Printf("%q\n", lines)
+	return fmt.Sprintf("%q\n", lines)
 }
