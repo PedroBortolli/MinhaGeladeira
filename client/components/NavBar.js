@@ -6,13 +6,13 @@ import Camera from '../assets/camera.png'
 import Journal from '../assets/journal.png'
 import Meal from '../assets/meal.png'
 
-const NavBar = () => {
+const NavBar = ({show}) => {
     return (
         <Bar>
             <Link to='/ingredients'>
                 <Image source={Meal} />
             </Link>
-            <Link to='/about'>
+            <Link to='/scanner'>
                 <Image source={Camera} />
             </Link>
             <Link to='/about'>
@@ -34,4 +34,5 @@ const Bar = styled.View`
     width: 100%;
     position: absolute;
     bottom: 0px;
+    z-index: 9998;
 `

@@ -73,7 +73,7 @@ const Input = styled.TextInput`
     border-width: 2px;
     border-radius: 4px;
     margin-bottom: 64px;
-    margin-top: 128px;
+    
     font-size: 22px;
 `
 const Item = styled.View`
