@@ -9,16 +9,22 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"image/jpeg"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	vision "cloud.google.com/go/vision/apiv1"
 	proto "google.golang.org/genproto/googleapis/cloud/vision/v1"
 )
+
+type Response struct {
+	Products []string
+}
 
 func main() {
 
@@ -69,10 +75,10 @@ func scan(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			err = fmt.Errorf("Failed to remove temp.jpg file: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+			return
 		}
 	}()
-	
+
 	err = jpeg.Encode(file, jpgI, &jpeg.Options{Quality: 75})
 	if err != nil {
 		err = fmt.Errorf("Failed to encode jpg file: %v", err)
@@ -90,7 +96,6 @@ func scan(w http.ResponseWriter, r *http.Request) {
 	}
 	defer temp.Close()
 
-
 	text, err := getTextFromImage(temp)
 	if err != nil {
 		err = fmt.Errorf("Failed to get text from image: %v", err)
@@ -98,9 +103,17 @@ func scan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parsedText := parseText(text[0].Description)
+	response := Response{}
+	response.Products = parseTextIntoProducts(text[0].Description)
 
-	fmt.Fprintf(w, parsedText, http.StatusOK)
+	responseJson, err := json.Marshal(response)
+	if err != nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
 }
 
 func getTextFromImage(file *os.File) ([]*proto.EntityAnnotation, error) {
@@ -128,11 +141,20 @@ func getTextFromImage(file *os.File) ([]*proto.EntityAnnotation, error) {
 	return text, nil
 }
 
-func parseText(text string) string {
+func parseTextIntoProducts(text string) []string {
 
 	lines := strings.Split(text, "\n")
+	products := make([]string, 0)
 
-	// TODO: Parse with regex
+	for _, line := range lines {
+		words := strings.Split(line, " ")
+		if len(words[0]) == 3 {
+			_, err := strconv.Atoi(words[0])
+			if err == nil {
+				products = append(products, strings.Join(words[2:], " "))
+			}
+		}
+	}
 
-	return fmt.Sprintf("%q\n", lines)
+	return products
 }
