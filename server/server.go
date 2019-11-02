@@ -9,13 +9,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/PedroBortolli/MinhaGeladeira/server/vision"
 	"github.com/PedroBortolli/MinhaGeladeira/server/encoding"
+	"github.com/PedroBortolli/MinhaGeladeira/server/vision"
 )
 
 type Response struct {
@@ -24,9 +25,22 @@ type Response struct {
 
 func main() {
 
+	addr := determineListenAddress()
 	http.HandleFunc("/scan", scan)
-	http.ListenAndServe(":8088", nil)
 
+	log.Printf("Listening on %s...\n", addr)
+	if err := http.ListenAndServe(addr, nil); err != nil {
+		panic(err)
+	}
+}
+
+func determineListenAddress() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		return ":8088"
+	}
+
+	return ":" + port
 }
 
 func scan(w http.ResponseWriter, r *http.Request) {
@@ -72,11 +86,11 @@ func scan(w http.ResponseWriter, r *http.Request) {
 	response.Products = parseTextIntoProducts(text[0].Description)
 
 	responseJson, err := json.Marshal(response)
-	if err != nil{
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseJson)
 }
