@@ -3,20 +3,24 @@ package main
 // Inicializar ambiente
 // export GOOGLE_APPLICATION_CREDENTIALS="../secrets/auth.json"
 // em outra janela, executar:
-// curl localhost:8088/scan 
+// http POST localhost:8088/scan < image64.txt
 
 import (
-	"context"
-	"io"
+	"encoding/json"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
-	vision "cloud.google.com/go/vision/apiv1"
-	proto "google.golang.org/genproto/googleapis/cloud/vision/v1"
+	"github.com/PedroBortolli/MinhaGeladeira/server/vision"
+	"github.com/PedroBortolli/MinhaGeladeira/server/encoding"
 )
+
+type Response struct {
+	Products []string
+}
 
 func main() {
 
@@ -25,57 +29,72 @@ func main() {
 
 }
 
-func scan(w http.ResponseWriter, req *http.Request) {
+func scan(w http.ResponseWriter, r *http.Request) {
 
-		// Sets the name of the image file to process.
-		filename := "../teste2.jpg"
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		err = fmt.Errorf("Failed to read request body: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-		file, err := os.Open(filename)
+	err = encoding.DecodeImageFromBytes(data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	defer func() {
+		err := os.Remove("temp.jpg")
 		if err != nil {
-			log.Fatalf("Failed to read file: %v", err)
+			err = fmt.Errorf("Failed to remove temp.jpg file: %v", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
-		defer file.Close()
-	
-		text, err := getTextFromImage(file)
-		if err != nil {
-			log.Fatalf("Failed to get text from image: %v", err)
-		}
-	
-		//	log.Printf("Extracted text %q from image (%d chars).", text, len(text))
-		out, err := os.Create("output.txt")
-		out.WriteString(text[0].Description)
-	
-		parsedText := parseText(text[0].Description)
+	}()
 
-	fmt.Fprintf(w, parsedText)
+	temp, err := os.Open("temp.jpg")
+	if err != nil {
+		err = fmt.Errorf("Failed to read temp.jpg file: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer temp.Close()
+
+	text, err := vision.GetTextFromImage(temp)
+	if err != nil {
+		err = fmt.Errorf("Failed to get text from image: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	response := Response{}
+	response.Products = parseTextIntoProducts(text[0].Description)
+
+	responseJson, err := json.Marshal(response)
+	if err != nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
 }
 
-func getTextFromImage(file io.Reader) ([]*proto.EntityAnnotation, error) {
-	ctx := context.Background()
-
-	client, err := vision.NewImageAnnotatorClient(ctx)
-	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
-	}
-	defer client.Close()
-
-	image, err := vision.NewImageFromReader(file)
-	if err != nil {
-		log.Fatalf("Failed to create image: %v", err)
-	}
-
-	text, err := client.DetectTexts(ctx, image, nil, 10)
-	if err != nil {
-		log.Fatalf("Failed to detect text: %v", err)
-	}
-
-	return text, nil
-}
-
-func parseText(text string) string {
+func parseTextIntoProducts(text string) []string {
 
 	lines := strings.Split(text, "\n")
-	// //	fmt.Printf("%q\n", strings.Split(text, "\n"))
-	// log.Printf("%q\n", lines)
-	return fmt.Sprintf("%q\n", lines)
+	products := make([]string, 0)
+
+	for _, line := range lines {
+		words := strings.Split(line, " ")
+		if len(words[0]) == 3 {
+			_, err := strconv.Atoi(words[0])
+			if err == nil {
+				products = append(products, strings.Join(words[2:], " "))
+			}
+		}
+	}
+
+	return products
 }
