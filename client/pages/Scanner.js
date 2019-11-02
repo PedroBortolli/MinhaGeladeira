@@ -5,11 +5,13 @@ import { Camera } from 'expo-camera'
 import styled from 'styled-components'
 import GreenSpinner from '../assets/green-spinner.gif'
 import Circle from '../assets/circle.png'
+import fetchApi from '../fetch'
 
 const Scanner = ({showNavBar}) => {
     const [cameraPermission, setCameraPermission] = useState(null)
     const [base64, setBase64] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [itens, setItens] = useState([])
     const camera = useRef(null)
 
     useEffect(() => {
@@ -31,6 +33,13 @@ const Scanner = ({showNavBar}) => {
         }
     }
 
+    const sendPhoto = async () => {
+        setLoading(true)
+        const response = await fetchApi('POST', 'http://192.168.0.10:8088/scan', base64)
+        if (response.ok && response.Products && response.Products.length > 0) setItens(response.Products)
+        setLoading(false)
+    }
+
     //console.log()
     const imagePreview = {
         flex: 1,
@@ -48,14 +57,24 @@ const Scanner = ({showNavBar}) => {
             </Center>
             :
             <View style={{flex: 1}}>
-                {base64 ?
+                {itens.length > 0 ? 
+                    <Center>
+                        {itens.map(item => <Text key={item}>{item}</Text>)}
+                    </Center>
+                :
+                    base64 ?
                     <Container>
+                        {loading &&
+                            <Center style={{elevation: 998}}>
+                                <Image source={GreenSpinner} style={{width: 96, height: 96}} />
+                            </Center>
+                        }
                         <Center style={{height: 'auto'}}>
                             <Title>Obter itens a partir da foto</Title>
                         </Center>
                         <Image source={{uri: base64}} style={imagePreview} />
                         <Confirmation>
-                            <Box style={{backgroundColor: '#b1e3fa'}}>
+                            <Box style={{backgroundColor: '#b1e3fa'}} onPress={sendPhoto}>
                                 <Button>Confirmar foto</Button>
                             </Box>
                             <Box style={{backgroundColor: '#f0b1ad'}} onPress={() => setBase64(null)}>
