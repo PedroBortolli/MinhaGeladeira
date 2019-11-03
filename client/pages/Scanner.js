@@ -35,7 +35,7 @@ const Scanner = ({showNavBar}) => {
 
     const sendPhoto = async () => {
         setLoading(true)
-        const response = await fetchApi('POST', 'http://192.168.0.10:8088/scan', base64)
+        const response = await fetchApi('POST', 'https://minhageladeira.herokuapp.com/scan', base64)
         if (response.ok && response.Products && response.Products.length > 0) setItens(response.Products)
         setLoading(false)
     }
