@@ -12,10 +12,10 @@ const Scanner = ({showNavBar}) => {
     const [base64, setBase64] = useState(null)
     const [loading, setLoading] = useState(false)
     const [itens, setItens] = useState([])
+    const [photoRead, setPhotoRead] = useState(false)
     const camera = useRef(null)
 
     useEffect(() => {
-        //showNavBar(false)
         const ask = async () => {
             const { status } = await Permissions.askAsync(Permissions.CAMERA)
             setCameraPermission(status === 'granted')
@@ -35,12 +35,15 @@ const Scanner = ({showNavBar}) => {
 
     const sendPhoto = async () => {
         setLoading(true)
+        setPhotoRead(false)
         const response = await fetchApi('POST', 'https://minhageladeira.herokuapp.com/scan', base64)
-        if (response.ok && response.Products && response.Products.length > 0) setItens(response.Products)
+        if (response.ok && response.Products && response.Products.length > 0) {
+            setItens(response.Products)
+        }
+        setPhotoRead(true)
         setLoading(false)
     }
 
-    //console.log()
     const imagePreview = {
         flex: 1,
         height: Dimensions.get('window').height,
@@ -57,30 +60,40 @@ const Scanner = ({showNavBar}) => {
             </Center>
             :
             <View style={{flex: 1}}>
-                {itens.length > 0 ? 
-                    <Center>
-                        {itens.map(item => <Text key={item}>{item}</Text>)}
-                    </Center>
+                {photoRead ?
+                    itens.length > 0 ?
+                        <Center>
+                            {itens.map(item => <Text key={item}>{item}</Text>)}
+                        </Center>
+                    :
+                    <Text style={{textAlign: 'center'}}>
+                        A imagem não parece ser uma nota fiscal ou não possui itens...
+                    </Text>
                 :
                     base64 ?
                     <Container>
                         {loading &&
                             <Center style={{elevation: 998}}>
                                 <Image source={GreenSpinner} style={{width: 96, height: 96}} />
+                                <Text style={{marginTop: 16, fontSize:22}}>Lendo imagem...</Text>
                             </Center>
                         }
                         <Center style={{height: 'auto'}}>
                             <Title>Obter itens a partir da foto</Title>
                         </Center>
-                        <Image source={{uri: base64}} style={imagePreview} />
-                        <Confirmation>
-                            <Box style={{backgroundColor: '#b1e3fa'}} onPress={sendPhoto}>
-                                <Button>Confirmar foto</Button>
-                            </Box>
-                            <Box style={{backgroundColor: '#f0b1ad'}} onPress={() => setBase64(null)}>
-                                <Button>Capturar novamente</Button>
-                            </Box>
-                        </Confirmation>
+                        {!loading &&
+                            <View style={{flex: 1}}>
+                                <Image source={{uri: base64}} style={imagePreview} />
+                                <Confirmation>
+                                    <Box style={{backgroundColor: '#b1e3fa'}} onPress={sendPhoto}>
+                                        <Button>Confirmar foto</Button>
+                                    </Box>
+                                    <Box style={{backgroundColor: '#f0b1ad'}} onPress={() => setBase64(null)}>
+                                        <Button>Capturar novamente</Button>
+                                    </Box>
+                                </Confirmation>
+                            </View>
+                        }
                     </Container>
                     :
                     <Camera style={{flex: 1, marginTop: -16, elevation: 999}} type={Camera.Constants.Type.back} ref={camera}>
