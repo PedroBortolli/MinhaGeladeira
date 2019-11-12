@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Text, AsyncStorage, TouchableHighlight } from 'react-native'
+import { Text, AsyncStorage, TouchableHighlight, Dimensions, View, ScrollView } from 'react-native'
 import Cross from '../assets/cross.png'
 import styled from 'styled-components'
+import Modal from '../components/Modal';
+
+const width = Dimensions.get('window').width
+const height = Dimensions.get('window').height
 
 const toString = (ar) => {
     if (!ar.length) return ''
@@ -15,8 +19,9 @@ const toString = (ar) => {
 }
 
 const Ingredients = () => {
-    const [input, setInput] = useState(null)
     const [ingredients, setIngredients] = useState([])
+    const [modal, showModal] = useState(false)
+    const [input, setInput] = useState(null)
 
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -35,46 +40,44 @@ const Ingredients = () => {
         await AsyncStorage.setItem('ingredients', parsedIngredients)
         setIngredients(newIngredients)
         setInput(null)
+        showModal(false)
     }
 
     return (
-        <Container>
-            <Input onChangeText={text => setInput(text)} value={input} 
-                placeholder="Digite um ingrediente aqui" onSubmitEditing={() => updateIngredients('add', input)} />
+        <React.Fragment>
+            {modal && <Center style={{height: height - 56, left: width*0.5, top: 0}}>
+                    <Modal updateIngredients={updateIngredients} input={input} setInput={setInput} />
+            </Center>}
 
-            <Container>
-                {ingredients.map((ing, id) => {
-                    return (
-                        <Item key={id} style={{borderBottomWidth: 1, borderBottomColor: '#cccccc'}}>
-                            <Text style={{fontSize: 18}}>{ing}</Text>
-                            <TouchableHighlight onPress={() => updateIngredients('delete', ing)}>
-                                <Cancel source={Cross} />
-                            </TouchableHighlight>
-                        </Item>
-                    )
-                })}
+            <Container pointerEvents={modal ? 'none' : 'auto'} style={{opacity: modal ? 0.2 : 1, elevation: 4444}}>
+                <TouchableHighlight onPress={() => showModal(true)}>
+                    <Text>Click!!</Text>
+                </TouchableHighlight>
+
+                <ScrollView style={{width}}>
+                    {ingredients.map((ing, id) => {
+                        return (
+                            <Item key={id} style={{borderBottomWidth: 1, borderBottomColor: '#cccccc'}}>
+                                <Text style={{fontSize: 18}}>{ing}</Text>
+                                <TouchableHighlight onPress={() => updateIngredients('delete', ing)}>
+                                    <Cancel source={Cross} />
+                                </TouchableHighlight>
+                            </Item>
+                        )
+                    })}
+                </ScrollView>
             </Container>
-        </Container>
+        </React.Fragment>
     )
 }
 
 export default Ingredients
 
 const Container = styled.View`
-    display: flex;
-    flex-direction: column;
+    flex: 1;
+    width: ${width};
     align-items: center;
-    width: 100%;
-`
-const Input = styled.TextInput`
-    width: 80%;
-    padding: 6px 0px 6px 12px;
-    border-color: #036b2e;
-    border-width: 2px;
-    border-radius: 4px;
-    margin-bottom: 64px;
-    
-    font-size: 22px;
+    margin-bottom: 56px;
 `
 const Item = styled.View`
     display: flex;
@@ -87,4 +90,10 @@ const Item = styled.View`
 const Cancel = styled.Image`
     width: 16px;
     height: 16px;
+`
+const Center = styled.View`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
 `
