@@ -84,7 +84,7 @@ const Ingredients = () => {
                                         </TouchableHighlight>
                                     </Item>
                                     <View>
-                                        <Amount>{`${quantities[id]} ${quantities[id].substr(quantities[id].length - 1) !== 'g' && 'unidades'}`}</Amount>
+                                        <Amount>{`${quantities[id]} ${quantities[id].substr(quantities[id].length - 1) !== 'g' ? 'unidades': ''}`}</Amount>
                                     </View>
                                 </View>
                             )
