@@ -1,28 +1,38 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, Dimensions } from 'react-native'
+import { Text, View, Dimensions, TouchableHighlight } from 'react-native'
 import styled from 'styled-components'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
-const Modal = ({ updateIngredients, input, setInput }) => {
+const Modal = ({ updateIngredients, input, setInput, amount, setAmount }) => {
     const [selected, changeSelected] = useState(1)
+
+    const send = () => {
+        if (input && amount) updateIngredients('add', input, selected)
+    }
+
     return (
-        <Container style={{width: 0.8*width, height: 0.5*height, elevation: 9999, zIndex: 9999}}>
+        <Container style={{width: 0.8*width, height: 0.43*height, elevation: 9999, zIndex: 9999}}>
             <Input onChangeText={text => setInput(text)} value={input} 
-                    placeholder="Digite um ingrediente" onSubmitEditing={() => updateIngredients('add', input)} />
+                    placeholder="Digite um ingrediente" />
             <Center>
                 <Switch>
                     <Box onPress={() => changeSelected(1)} style={{backgroundColor: selected === 1 ? 'green' : 'white'}}>
-                        <Text>Unidade</Text>
+                        <Text style={{color: selected === 1 ? 'white' : 'black'}}>Unidade</Text>
                     </Box>
                     <Box onPress={() => changeSelected(2)} style={{backgroundColor: selected === 2 ? 'green' : 'white'}}>
-                        <Text>Peso</Text>
+                        <Text style={{color: selected === 2 ? 'white' : 'black'}}>Peso</Text>
                     </Box>
                 </Switch>
-                <Number placeholder="Quantidade" />
+                <Number placeholder="Quantidade" onChangeText={number => setAmount(number)} value={amount} />
+                <Text>{selected === 1 ? 'unidades' : 'gramas'}</Text>
             </Center>
-            <Text>Confirmar</Text>
+            <TouchableHighlight onPress={send} style={{marginTop: 8}}>
+                <Button style={{backgroundColor: input && amount ? '#036b2e' : '#7a7a7a'}}>
+                    <Text style={{fontSize: 24, color: 'white'}}>Confirmar</Text>
+                </Button>
+            </TouchableHighlight>
         </Container>
     )
 }
@@ -73,6 +83,13 @@ const Number = styled.TextInput`
 const Center = styled.View`
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
+const Button = styled.View`
+    height: 42px;
+    width: 250px;
+    display: flex;
     justify-content: center;
     align-items: center;
 `

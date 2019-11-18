@@ -18,7 +18,7 @@ const App = () => {
     return (
         <Container>
             <NativeRouter history={nativeHistory}>
-                <Route exact path="/" component={Home} />
+                <Route exact path="/" component={Ingredients} />
                 <Route path="/about" component={About} />
                 <Route path="/ingredients" component={Ingredients} />
                 <Route path="/scanner" component={() => <Scanner showNavBar={showNavBar} />} />
