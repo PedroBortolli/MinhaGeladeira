@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Text, View, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { Text, AsyncStorage, View, Image, TouchableOpacity, Dimensions } from 'react-native'
 import * as Permissions from 'expo-permissions'
 import { Camera } from 'expo-camera'
 import styled from 'styled-components'
 import GreenSpinner from '../assets/green-spinner.gif'
 import Circle from '../assets/circle.png'
 import fetchApi from '../fetch'
+
+const toString = (ar) => {
+    if (!ar.length) return ''
+    let parsedArray = '['
+    ar.forEach((str, i) => {
+        parsedArray += `"${str}"`
+        if (i < ar.length - 1) parsedArray += ', '
+        else parsedArray += ']'
+    })
+    return parsedArray
+}
 
 const Scanner = ({showNavBar}) => {
     const [cameraPermission, setCameraPermission] = useState(null)
@@ -37,7 +48,27 @@ const Scanner = ({showNavBar}) => {
         setLoading(true)
         setPhotoRead(false)
         const response = await fetchApi('POST', 'https://minhageladeira.herokuapp.com/scan', base64)
+        let newIngredients = [], newQuantities = []
         if (response.ok && response.Products && response.Products.length > 0) {
+            response.Products.forEach(product => {
+                if (product && product.length > 2) {
+                    const item = product.trim().split(/\s+/)
+                    newIngredients = [...newIngredients, item[0] + item[1]]
+                    let qnt = item[item.length - 1]
+                    if (qnt === 'kg' || qnt === 'Kg' || qnt === 'KG') qnt = '1000g'
+                    newQuantities = [...newQuantities, qnt]
+                }
+            })
+
+            const currentIngredients = await AsyncStorage.getItem('ingredients')
+            const currentQuantities = await AsyncStorage.getItem('quantities')
+
+            const ings = [...JSON.parse(currentIngredients), ...newIngredients]
+            const qnts = [...JSON.parse(currentQuantities), ...newQuantities]
+
+            await AsyncStorage.setItem('ingredients', toString(ings))
+            await AsyncStorage.setItem('quantities', toString(qnts))
+
             setItens(response.Products)
         }
         setPhotoRead(true)
@@ -62,13 +93,13 @@ const Scanner = ({showNavBar}) => {
             <View style={{flex: 1}}>
                 {photoRead ?
                     itens.length > 0 ?
-                        <Center>
-                            {itens.map(item => <Text key={item}>{item}</Text>)}
-                        </Center>
+                        <Text style={{textAlign: 'center'}}>
+                            Itens adicionados com sucesso!
+                        </Text>    
                     :
-                    <Text style={{textAlign: 'center'}}>
-                        A imagem não parece ser uma nota fiscal ou não possui itens...
-                    </Text>
+                        <Text style={{textAlign: 'center'}}>
+                            A imagem não parece ser uma nota fiscal ou não possui itens...
+                        </Text>
                 :
                     base64 ?
                     <Container>
