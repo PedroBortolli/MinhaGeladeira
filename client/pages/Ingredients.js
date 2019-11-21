@@ -27,6 +27,7 @@ const Ingredients = () => {
 
     useEffect(() => {
         const fetchIngredients = async () => {
+            
             const ing = await AsyncStorage.getItem('ingredients')
             if (ing) setIngredients(JSON.parse(ing))
             const qnt = await AsyncStorage.getItem('quantities')
@@ -83,9 +84,11 @@ const Ingredients = () => {
                                             <Cancel source={Cross} />
                                         </TouchableHighlight>
                                     </Item>
-                                    <View>
-                                        <Amount>{`${quantities[id]} ${quantities[id].substr(quantities[id].length - 1) !== 'g' ? 'unidades': ''}`}</Amount>
-                                    </View>
+                                    {quantities[id] &&
+                                        <View>
+                                            <Amount>{`${quantities[id]} ${quantities[id].substr(quantities[id].length - 1) !== 'g' ? 'unidades': ''}`}</Amount>
+                                        </View>
+                                    }
                                 </View>
                             )
                         })}

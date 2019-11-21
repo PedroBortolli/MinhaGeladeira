@@ -56,9 +56,13 @@ const Scanner = ({showNavBar}) => {
                     newIngredients = [...newIngredients, item[0] + item[1]]
                     let qnt = item[item.length - 1]
                     if (qnt === 'kg' || qnt === 'Kg' || qnt === 'KG') qnt = '1000g'
+                    else if (qnt.substr(0, 1) != '1' && qnt.substr(0, 1) != '2') qnt = '1'
                     newQuantities = [...newQuantities, qnt]
                 }
             })
+
+            //console.log(newIngredients)
+            //console.log(newQuantities)
 
             const currentIngredients = await AsyncStorage.getItem('ingredients')
             const currentQuantities = await AsyncStorage.getItem('quantities')
