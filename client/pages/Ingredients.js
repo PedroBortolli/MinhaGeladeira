@@ -3,6 +3,9 @@ import { Text, AsyncStorage, TouchableHighlight, Dimensions, View, ScrollView } 
 import Cross from '../assets/cross.png'
 import styled from 'styled-components'
 import Modal from '../components/Modal'
+import { primaryColor } from '../colors'
+import dict from '../dict'
+import Header from '../components/Header'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -16,6 +19,13 @@ const toString = (ar) => {
         else parsedArray += ']'
     })
     return parsedArray
+}
+
+const parse = (ing) => {
+    const words = ing.match(/[A-Z][a-z]+/g)
+    return words.reduce((prev, cur, id) => {
+        return prev + (cur in dict ? dict[cur] : cur) + (id < words.length - 1 ? ' ' : '')
+    }, '')
 }
 
 const Ingredients = () => {
@@ -66,10 +76,13 @@ const Ingredients = () => {
                     <Modal updateIngredients={updateIngredients} input={input} setInput={setInput} amount={amount} setAmount={setAmount} />
             </Center>}
 
-            <Container pointerEvents={modal ? 'none' : 'auto'} style={{opacity: modal ? 0.2 : 1, elevation: 4444}}>
+            <Header />
+
+            <Container pointerEvents={modal ? 'none' : 'auto'} style={{opacity: modal ? 0.1 : 1, elevation: 4444}}>
+                <Text style={{fontSize: 22, marginBottom: 8}}>Meus Ingredientes</Text>
                 <TouchableHighlight onPress={() => showModal(true)}>
                     <Button>
-                        <Text style={{fontSize: 24, color: 'white'}}>Adicionar</Text>
+                        <Text style={{fontSize: 20, color: 'white'}}>Adicionar</Text>
                     </Button>
                 </TouchableHighlight>
 
@@ -77,19 +90,19 @@ const Ingredients = () => {
                     <ScrollView style={{width}}>
                         {ingredients.map((ing, id) => {
                             return (
-                                <View key={id} style={{borderBottomWidth: 1, borderBottomColor: '#cccccc'}}>
+                                <ItemContainer key={id} style={{borderBottomWidth: id < ingredients.length - 1 ? 1 : 0}}>
                                     <Item>
-                                        <Text style={{fontSize: 18}}>{ing}</Text>
+                                        <Text style={{fontSize: 20}}>{parse(ing)}</Text>
                                         <TouchableHighlight onPress={() => updateIngredients('delete', ing)}>
-                                            <Cancel source={Cross} />
+                                            <Cancel source={Cross} tintColor={primaryColor} />
                                         </TouchableHighlight>
                                     </Item>
                                     {quantities[id] &&
                                         <View>
-                                            <Amount>{`${quantities[id]} ${quantities[id].substr(quantities[id].length - 1) !== 'g' ? 'unidades': ''}`}</Amount>
+                                            <Amount>{`${quantities[id]} ${quantities[id].substr(quantities[id].length - 1) !== 'g' ? (Number(quantities[id]) === 1 ? 'unidade' : 'unidades') : ''}`}</Amount>
                                         </View>
                                     }
-                                </View>
+                                </ItemContainer>
                             )
                         })}
                     </ScrollView>
@@ -132,15 +145,26 @@ const Center = styled.View`
     position: absolute;
 `
 const Button = styled.View`
-    background-color: #036b2e;
-    height: 42px;
-    width: 300px;
+    background-color: ${primaryColor};
+    height: 32px;
+    width: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 `
 const Amount = styled.Text`
     padding: 0px 0px 4px 16px;
     font-style: italic;
+`
+const ItemContainer = styled.View`
+    border-bottom-color: rgba(30, 105, 51, .4);
+    padding-bottom: 4px;
+`
+const Title = styled.View`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
 `

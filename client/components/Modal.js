@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, Dimensions, TouchableHighlight } from 'react-native'
 import styled from 'styled-components'
+import { primaryColor } from '../colors'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -44,10 +45,11 @@ const Container = styled.View`
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    border: 3px solid black;
+    border: 3px solid ${primaryColor};
     background-color: white;
     position: absolute;
     padding: 12px 6px 12px 6px;
+    border-radius: 6px;
 `
 const Input = styled.TextInput`
     width: 90%;
@@ -67,7 +69,7 @@ const Box = styled.TouchableHighlight`
     margin: 0px 6px 0px 6px;
     width: 75px;
     padding: 6px 0px 6px;
-    border: 1px solid black;
+    border: 1px solid ${primaryColor};
     display: flex;
     justify-content: center;
     align-items: center;

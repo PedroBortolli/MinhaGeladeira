@@ -10,7 +10,7 @@ import styled from 'styled-components'
 
 const Container = styled.View`
     height: 100%;
-    padding-top: ${StatusBar.currentHeight + 16};
+    padding-top: ${StatusBar.currentHeight};
 `
 
 const App = () => {

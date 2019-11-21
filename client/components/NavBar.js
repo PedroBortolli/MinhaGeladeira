@@ -5,18 +5,19 @@ import styled from 'styled-components'
 import Camera from '../assets/camera.png'
 import Journal from '../assets/journal.png'
 import Meal from '../assets/meal.png'
+import { primaryColor } from '../colors'
 
 const NavBar = ({show}) => {
     return (
         <Bar>
             <Link to='/ingredients'>
-                <Image source={Meal} />
+                <Image tintColor="white" source={Meal} />
             </Link>
             <Link to='/scanner'>
-                <Image source={Camera} />
+                <Image tintColor="white" source={Camera} />
             </Link>
             <Link to='/about'>
-                <Image source={Journal} />
+                <Image tintColor="white" source={Journal} />
             </Link>
         </Bar>
     )
@@ -29,7 +30,7 @@ const Bar = styled.View`
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    background-color: #0d9431;
+    background-color: ${primaryColor};
     height: 48px;
     width: 100%;
     position: absolute;

@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import GreenSpinner from '../assets/green-spinner.gif'
 import Circle from '../assets/circle.png'
 import fetchApi from '../fetch'
+import { primaryColor } from '../colors'
 
 const toString = (ar) => {
     if (!ar.length) return ''
@@ -186,7 +187,7 @@ const Box = styled.TouchableOpacity`
 `
 const Title = styled.Text`
     font-size: 26;
-    color: #0d9431;
+    color: ${primaryColor};
     font-weight: 900;
 `
 const Button = styled.Text`
