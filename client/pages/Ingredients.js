@@ -79,7 +79,7 @@ const Ingredients = () => {
             <Header />
 
             <Container pointerEvents={modal ? 'none' : 'auto'} style={{opacity: modal ? 0.1 : 1, elevation: 4444}}>
-                <Text style={{fontSize: 22, marginBottom: 8}}>Meus Ingredientes</Text>
+                <Text style={{fontSize: 22, marginBottom: 8, color: primaryColor}}>Meus Ingredientes</Text>
                 <TouchableHighlight onPress={() => showModal(true)}>
                     <Button>
                         <Text style={{fontSize: 20, color: 'white'}}>Adicionar</Text>
@@ -124,7 +124,7 @@ const Container = styled.View`
     flex: 1;
     width: ${width};
     align-items: center;
-    margin-bottom: 56px;
+    margin-bottom: 48px;
 `
 const Item = styled.View`
     display: flex;

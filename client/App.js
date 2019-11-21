@@ -7,6 +7,7 @@ import Ingredients from './pages/Ingredients'
 import Scanner from './pages/Scanner'
 import NavBar from './components/NavBar'
 import styled from 'styled-components'
+import Suggestions from './pages/Suggestions'
 
 const Container = styled.View`
     height: 100%;
@@ -22,6 +23,7 @@ const App = () => {
                 <Route path="/about" component={About} />
                 <Route path="/ingredients" component={Ingredients} />
                 <Route path="/scanner" component={() => <Scanner showNavBar={showNavBar} />} />
+                <Route path="/suggestions" component={Suggestions} />
                 <NavBar show={navBar} />
             </NativeRouter>
         </Container>

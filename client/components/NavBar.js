@@ -16,7 +16,7 @@ const NavBar = ({show}) => {
             <Link to='/scanner'>
                 <Image tintColor="white" source={Camera} />
             </Link>
-            <Link to='/about'>
+            <Link to='/suggestions'>
                 <Image tintColor="white" source={Journal} />
             </Link>
         </Bar>
